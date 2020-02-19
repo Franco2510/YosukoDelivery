@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Padrón de Personas</title>
+
+<style>
+div {
+    box-shadow: 5px 5px 5px #888888;
+}
+</style>
+
+<script src="scripts.js?6"></script>
+
+</head>
+
+<body onload="ComprobarSesion();">
+
+<div id="menu" style="background:#cceeff;">
+<h3 align="right"><a href="logout.php">Cerrar Sesión</a></h3>
+<h3 align="left"><a href="menu.html">Volver al Menú</a></h3>
+<h2 align="center">SISTEMA DE YOSUKO DELIVERY</h2>
+<table width="331" border="4" align="center" style="background:white;">
+  <tr>
+    <th width="47" scope="col"><input type="submit" onclick="MostrarMenus('menu_abms')" name="abms" id="abms" value="ABMs" /></th>
+    <th width="62" scope="col"><input type="submit" onclick="MostrarMenus('menu_listas')"name="listas" id="listas" value="Listados" /></th>
+    <th width="65" scope="col"><input type="submit" onclick="MostrarMenus('menu_facturas')" name="facturas" id="facturas" value="Facturas" /></th>
+    <th width="58" scope="col"><input type="submit" onclick="MostrarMenus('menu_ajustes')" name="ajustes" id="ajustes" value="Ajustes" /></th>
+    <th width="75" scope="col"><input type="submit" onclick="MostrarMenus('menu_informes')" name="informes" id="informes" value="Informes" /></th>
+  </tr>
+</table>
+
+<p></p>
+
+<div id="menu_abms">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_articulos.html')" name="abm_articulos" id="abm_articulos" value="ABM Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_personas.html')" name="abm_personas" id="abm_personas" value="ABM Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_listas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_articulos.html')" name="lista_articulos" id="lista_articulos" value="Listado de Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_personas.html')" name="lista_personas" id="lista_personas" value="Padrón de Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_facturas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_compra.html')" name="factura_compra" id="factura_compra" value="Facturar Compra" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_venta.html')" name="factura_venta" id="factura_venta" value="Facturar Venta" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_ajustes">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_stock.html')" name="ajuste_stock" id="ajuste_stock" value="Ajuste de Stock" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_caja.html')" name="ajuste_caja" id="ajuste_caja" value="Ajuste de Caja" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_informes">
+<table width="495" border="1" align="center">
+  <tr>
+    <th width="114" scope="col"><input type="submit" onclick="CargarPagina('informe_stock.html')" name="informe_stock" id="informe_stock" value="Informe de Stock" /></th>
+    <th width="109" scope="col"><input type="submit" onclick="CargarPagina('informe_caja.html')" name="informe_caja" id="informe_caja" value="Informe de Caja" /></th>
+    <th width="125" scope="col"><input type="submit" onclick="CargarPagina('informe_articulo.html')" name="informe_articulo" id="informe_articulo" value="Ventas por Articulo" /></th>
+    <th width="253" scope="col"><input type="submit" onclick="CargarPagina('informe_cliente.html')" name="informe_cliente" id="informe_cliente" value="Ventas por Cliente" /></th>
+  </tr>
+</table>
+
+</div>
+</div>
+
+<p></p>
+
+<div id="encabezado" style="background:black;color:white;">
+<h3 align="center">Padrón de Personas</h3>
+</div>
+
+<div align="center"></div>
+<form action="lista_articulos.php" method="get" name="formulario" id="formulario"/>
+  <table width="1000" border="0" align="center" cellspacing="8">
+    <tr>
+      <th width="215" valign="bottom" scope="col"><label for="nombre">Búsqueda por Nombre<br/></label>
+      <input type="text" size="30" maxlength="30" name="nombre" id="nombre"
+      onkeyup="ValidarTexto(this.id);TraerLista();" autocomplete="off" /></th>
+      <th width="83" scope="col">&nbsp;</th>
+      <th width="156" scope="col"><label for="tipo">Ordenar por </label>
+      <select name="orden" id="orden" onChange="TraerLista()">
+        <option value="0">Código</option>
+        <option value="1">Nombre</option>
+        <option value="2">Apellido</option>
+        <option value="3">Tipo</option>
+        <option value="4">Localidad</option>
+        <option value="5">Cargo/Empresa</option>
+        <option value="6">Fecha de Nacimiento</option>
+        <option value="7">Fecha de Alta</option>
+      </select></th>
+      <th width="116" scope="col" align="left" valign="bottom"><input type="radio" name="radio" id="ascendente" value="ascendente" checked="checked" onchange="TraerLista()"/><label for="ascendente">Ascendente<br/></label>
+        <input type="radio" name="radio" id="descendente" value="descendente" onchange="TraerLista()"/>Descendente</label></th>
+      <th width="97" scope="col" align="left" valign="bottom">&nbsp;</th>
+      <th width="265" scope="col" align="left" valign="bottom"><input type="checkbox" name="borrados" id="borrados" onchange="TraerLista()"/>
+      <label for="mostrar_borrados">Mostrar dados de baja</label></th>
+    </tr>
+    <tr>
+  </table>
+
+</form>
+
+<table id="lista" align="center" style="table-layout:fixed;" width="1000" border="1" cellspacing="0" cellpadding="1">
+
+</table>
+
+<h4 align="center"><label id="estado">&nbsp;</label></h4>
+
+<div style="background:black;color:white;">
+<h3>&nbsp;</h3>
+</div>
+
+<script scr="scripts.js">
+
+function Comenzar() {
+	MostrarMenus('menu_listas');
+	TraerLista();
+}
+
+
+function TraerLista() { //--MODO 0
+	var nombre=document.getElementById("nombre").value;
+	
+	var orden=document.getElementById("orden").selectedIndex;
+	
+	var ascendente="";
+	if (document.getElementById("ascendente").checked==true) ascendente="1";
+	else ascendente="0";
+	
+	var borrados="";
+	if (document.getElementById("borrados").checked==true) borrados="1";
+	else borrados="0";
+	
+	
+	var datos="modo=0";
+	datos+="&nombre="+nombre;
+	datos+="&orden="+orden;
+	datos+="&ascendente="+ascendente;
+	datos+="&borrados="+borrados;
+		
+	ajax=objetoAjax();
+	ajax.open("POST", "lista_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {			
+			var tabla="\
+			<tr style='font-weight:bold;color:white;' bgcolor='#000000'>\
+    			<td width='50'>Código</td>\
+    			<td width='200'>Nombre y Apellido</td>\
+    			<td width='100'>Tipo</td>\
+    			<td width='80'>DNI</td>\
+    			<td width='180'>Domicilio</td>\
+    			<td width='80'>Teléfono</td>\
+    			<td width='120'>Localidad</td>\
+    			<td width='120'>Provincia</td>\
+				<td width='160'>Cargo/Empresa</td>\
+				<td width='80'>F. Nacimiento</td>\
+				<td width='80'>Fecha de Alta</td>\
+				<td width='140'>Operaciones</td>\
+  			</tr>";
+			
+        	var resultados = ajax.responseText.split("/");
+			
+			if (resultados=="") document.getElementById("estado").innerHTML="Sin resultados.";
+			else document.getElementById("estado").innerHTML="&nbsp;"
+			
+			for (var i=0; i<resultados.length-1; i++) {
+				tabla+=CrearFila(resultados[i]); //--envia articulo para convertirlo en fila
+			}
+			document.getElementById("lista").innerHTML=tabla;
+		}
+	};
+	ajax.send(datos);
+}
+
+function CrearFila(persona) {
+	persona=persona.split("|");
+	var codigo=persona[0];
+	var nombre=persona[1];
+	
+	var tipo="";
+	switch (parseInt(persona[2])) {
+	case 0: tipo="CLIENTE"; break;
+	case 1: tipo="EMPLEADO"; break;
+	case 2: tipo="PROVEEDOR"; break;
+	}	
+	
+	var dni=persona[3];
+	var domicilio=persona[4];
+	var telefono=persona[5];
+	var localidad=persona[6];
+	var provincia=persona[7];
+	var cargoempresa=persona[8];
+	var nacimiento=persona[10];
+	var alta=persona[11];
+	
+	var activo=persona[9];
+	
+	var fila="<tr>";
+	if (activo=="0") fila="<tr bgcolor='#bfbfbf'>"
+	
+	fila+="<td>"+codigo+"</td>";
+	fila+="<td>"+nombre+"</td>";
+	fila+="<td>"+tipo+"</td>";
+	fila+="<td>"+dni+"</td>";
+	fila+="<td>"+domicilio+"</td>";
+	fila+="<td>"+telefono+"</td>";
+	fila+="<td>"+localidad+"</td>";
+	fila+="<td>"+provincia+"</td>";
+	fila+="<td>"+cargoempresa+"</td>";
+	fila+="<td>"+nacimiento+"</td>";
+	fila+="<td>"+alta+"</td>";
+	fila+="<td>";
+	fila+="<a href='abm_personas.html?codigo="+codigo+"' target='_blank'>EDITAR</a>   ";
+	fila+="   ";
+	fila+="MOVIMIENTOS";
+	fila+="</td>"; 
+	fila+="</tr>";
+	return fila;
+}
+
+</script>
+</body>
+
+</html>

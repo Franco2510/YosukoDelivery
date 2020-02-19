@@ -1,0 +1,808 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ABM de Personas</title>
+
+<style>
+div {
+    box-shadow: 5px 5px 5px #888888;
+}
+</style>
+
+<script src="scripts.js?6"></script>
+
+</head>
+
+<body onload="ComprobarSesion();">
+
+<div id="menu" style="background:#ccffcc;">
+<h3 align="right"><a href="logout.php">Cerrar Sesión</a></h3>
+<h3 align="left"><a href="menu.html">Volver al Menú</a></h3>
+<h2 align="center">SISTEMA DE YOSUKO DELIVERY</h2>
+
+<table width="331" border="4" align="center" style="background:white;">
+  <tr>
+    <th width="47" scope="col"><input type="submit" onclick="MostrarMenus('menu_abms')" name="abms" id="abms" value="ABMs" /></th>
+    <th width="62" scope="col"><input type="submit" onclick="MostrarMenus('menu_listas')"name="listas" id="listas" value="Listados" /></th>
+    <th width="65" scope="col"><input type="submit" onclick="MostrarMenus('menu_facturas')" name="facturas" id="facturas" value="Facturas" /></th>
+    <th width="58" scope="col"><input type="submit" onclick="MostrarMenus('menu_ajustes')" name="ajustes" id="ajustes" value="Ajustes" /></th>
+    <th width="75" scope="col"><input type="submit" onclick="MostrarMenus('menu_informes')" name="informes" id="informes" value="Informes" /></th>
+  </tr>
+</table>
+
+<p></p>
+
+<div id="menu_abms">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_articulos.html')" name="abm_articulos" id="abm_articulos" value="ABM Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_personas.html')" name="abm_personas" id="abm_personas" value="ABM Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_listas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_articulos.html')" name="lista_articulos" id="lista_articulos" value="Listado de Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_personas.html')" name="lista_personas" id="lista_personas" value="Padrón de Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_facturas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_compra.html')" name="factura_compra" id="factura_compra" value="Facturar Compra" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_venta.html')" name="factura_venta" id="factura_venta" value="Facturar Venta" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_ajustes">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_stock.html')" name="ajuste_stock" id="ajuste_stock" value="Ajuste de Stock" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_caja.html')" name="ajuste_caja" id="ajuste_caja" value="Ajuste de Caja" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_informes">
+<table width="495" border="1" align="center">
+  <tr>
+    <th width="114" scope="col"><input type="submit" onclick="CargarPagina('informe_stock.html')" name="informe_stock" id="informe_stock" value="Informe de Stock" /></th>
+    <th width="109" scope="col"><input type="submit" onclick="CargarPagina('informe_caja.html')" name="informe_caja" id="informe_caja" value="Informe de Caja" /></th>
+    <th width="125" scope="col"><input type="submit" onclick="CargarPagina('informe_articulo.html')" name="informe_articulo" id="informe_articulo" value="Ventas por Articulo" /></th>
+    <th width="253" scope="col"><input type="submit" onclick="CargarPagina('informe_cliente.html')" name="informe_cliente" id="informe_cliente" value="Ventas por Cliente" /></th>
+  </tr>
+</table>
+
+</div>
+</div>
+
+<p></p>
+
+<div id="encabezado" style="background:black;color:white;">
+<h3 align="center">ABM de Personas</h3>
+</div>
+
+<form action="abm_personas.php" method="get" name="formulario" id="formulario"/>
+<table width="800" border="0" align="center" cellspacing="8">
+    <tr>
+      <th width="186" scope="col"><input type="reset" name="nuevo" id="nuevo" value="Nueva Persona" onclick="NuevoID()"/></th>
+      <th colspan="2" scope="col"><label for="codigo">Búsqueda por código </label>
+      <input type="text" size="9" maxlength="9" name="codigo" id="codigo" style="text-align:right" 
+      onclick="this.select();" onblur="ValidarEntero(this.id)"
+      onkeyup="BusquedaPersona(this.value)" autocomplete="off"/>
+      </th>
+      <th width="223" scope="col"><label for="tipo">Categoría</label>
+      <select name="tipo" id="tipo" onChange="SeleccionarTipo()">
+        <option value="0">Cliente</option>
+        <option value="1">Empleado</option>
+        <option value="2">Proveedor</option>
+      </select></th>
+    </tr>
+    <tr>
+      <td colspan="4"><hr></td>
+    </tr>
+    <tr>
+      <td align="center"><label for="nombre">Nombre</label><br/>
+      <input type="text" size="20" maxlength="30" name="nombre" id="nombre"
+      list="sugerencias_nombre" onkeyup="ValidarTexto(this.id);TraerSugerencias(this.value,0);"
+      oninput="SeleccionarSugerencia(this.value,0);" autocomplete="off" />
+      <datalist id="sugerencias_nombre"></datalist></td>
+      <td width="198" align="center"><label for="apellido">Apellido</label><br/>
+      <input type="text" size="20" maxlength="30" name="apellido" id="apellido"
+      list="sugerencias_apellido" onkeyup="ValidarTexto(this.id);TraerSugerencias(this.value,1);"
+      oninput="SeleccionarSugerencia(this.value,1);" autocomplete="off" />
+      <datalist id="sugerencias_apellido"></datalist></td>
+      <td colspan="2" align="center"><p>
+        <label for="dni">DNI</label><br/>
+        <input type="text" size="9" maxlength="8" name="dni" id="dni" value="0"
+        onblur="ValidarEntero(this.id)" autocomplete="off"/>
+      </p></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="left"><label for="domicilio">Domicilio</label><br/>
+       <input type="text" size="50" maxlength="50" name="domicilio" id="domicilio"
+      onkeyup="ValidarTexto(this.id)" autocomplete="off" /></td>
+      <td width="145"><label for="telefono">Teléfono</label><br/>
+      <input type="text" size="10" maxlength="10" name="telefono" id="telefono" value="0"
+      onblur="ValidarEntero(this.id)" autocomplete="off"/></td>
+      <td><label for="nacimiento">Fecha de Nacimiento</label><br/>
+      <input type="date" name="nacimiento" id="nacimiento" /></td>
+    </tr>
+    <tr>
+      <td align="center"><label for="provincias">Provincia</label><br/>
+        <select name="provincias" id="provincias" maxlength="30" autocomplete="off" onchange="HabilitarLocalidades(0,false);">
+        <option value="0" >EXTRANJERO</option>
+        <option value="1" >MISIONES</option>
+        <option value="2" >CORRIENTES</option>
+        <option value="3" >ENTRE RIOS</option>
+        <option value="4" >BUENOS AIRES</option>
+        <option value="5" >SANTA FE</option>
+        <option value="6" >CHACO</option>
+        <option value="7" >FORMOSA</option>
+        <option value="8" >STGO DEL ESTERO</option>
+        <option value="9" >TUCUMAN</option>
+        <option value="10">SALTA</option>
+        <option value="11">JUJUY</option>
+        <option value="12">CATAMARCA</option>
+        <option value="13">LA RIOJA</option>
+        <option value="14">SAN JUAN</option>
+        <option value="15">MENDOZA</option>
+        <option value="16">SAN LUIS</option>
+        <option value="17">CORDOBA</option>
+        <option value="18">LA PAMPA</option>
+        <option value="19">NEUQUEN</option>
+        <option value="20">RIO NEGRO</option>
+        <option value="21">CHUBUT</option>
+        <option value="22">SANTA CRUZ</option>
+        <option value="23">TIERRA DEL FUEGO</option>
+      </select></td>
+      <td align="center"><label for="localidades">Localidad</label>
+        <br />
+        <select name="localidades" id="localidades" maxlength="30" autocomplete="off" disabled="disabled" onchange="HabilitarNuevo(1);">
+          <option value="0" >NUEVA LOCALIDAD</option>
+      </select></td>
+      <td align="center" valign="bottom">
+        <input type="button" name="borrar_localidad" id="borrar_localidad" value="Borrar" style="visibility:hidden" onclick="BorrarElemento(1);" />&nbsp;&nbsp;&nbsp;
+        <input type="button" name="agregar_localidad" id="agregar_localidad" value="Agregar" style="visibility:hidden" onclick="AgregarElemento(1);"/>
+      </label></td>
+      <td><label id="texto_localidad" for="nueva_localidad" style="visibility:hidden">Agregar nueva localidad</label>
+        <br/>
+      <input type="text" name="nueva_localidad" id="nueva_localidad" size="20" maxlength="30"onkeyup="ValidarTexto(this.id)" autocomplete="off" style="visibility:hidden"/></td>
+    </tr>
+   </table>
+<table id="sector_empleados" width="800" border="0" align="center" cellspacing="8">
+    <tr>
+      <td colspan="4"><hr></td>
+    </tr>
+    <tr>
+      <td width="180" align="center">&nbsp;</td>
+      <td width="205" align="center" valign="bottom"><label for="cargos">Cargo</label>
+        <br/>
+        <select name="cargos" id="cargos" maxlength="30" autocomplete="off" onchange="HabilitarNuevo(2);">
+          <option value="0">NUEVO CARGO</option>
+      </select></td>
+      <td width="143" align="center" valign="bottom"><input type="button" name="borrar_cargo" id="borrar_cargo" value="Borrar" style="visibility:hidden" onclick="BorrarElemento(2);" />        &nbsp;&nbsp;&nbsp;
+        <input type="button" name="agregar_cargo" id="agregar_cargo" value="Agregar" onclick="AgregarElemento(2);"/>
+      </label></td>
+      <td width="224" align="left"><label id="texto_cargo" for="nueva_localidad">Agregar nuevo cargo</label>
+        <br/>
+      <input type="text" name="nuevo_cargo" id="nuevo_cargo" size="20" maxlength="30"onkeyup="ValidarTexto(this.id)" autocomplete="off"/></td>
+     </tr>
+</table>
+   <table id="sector_proveedores" width="800" border="0" align="center" cellspacing="8">
+     <tr>
+       <td colspan="4"><hr /></td>
+     </tr>
+     <tr>
+       <td width="180" align="center">&nbsp;</td>
+       <td width="205" align="center" valign="bottom"><label for="empresas">Empresa</label>
+         <br/>
+         <select name="empresas" id="empresas" maxlength="30" autocomplete="off" onchange="HabilitarNuevo(3);">
+           <option value="0">NUEVA EMPRESA</option>
+         </select></td>
+       <td width="143" align="center" valign="bottom"><input type="button" name="borrar_empresa" id="borrar_empresa" value="Borrar" style="visibility:hidden" onclick="BorrarElemento(3);" />
+         &nbsp;&nbsp;&nbsp;
+         <input type="button" name="agregar_empresa" id="agregar_empresa" value="Agregar" onclick="AgregarElemento(3);"/>
+         </label></td>
+       <td width="224" align="left"><label id="texto_empresa" for="nueva_empresa">Agregar nueva empresa</label>
+         <br/>
+         <input type="text" name="nueva_empresa" id="nueva_empresa" size="20" maxlength="30"onkeyup="ValidarTexto(this.id)" autocomplete="off"/></td>
+     </tr>
+   </table>
+   <table width="800" border="0" align="center" cellspacing="8">
+    <tr>
+      <td colspan="4"><hr></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><input type="button" name="borrar" id="borrar" value="Borrar Persona" onclick="BorrarPersona();"/></td>
+      <td width="109" colspan="2" align="center"><input type="button" name="guardar" id="guardar" value="Guardar Persona" onclick="GuardarPersona();"/></td>
+    </tr>
+</table>
+</form>
+
+<h4 align="center"><label id="estado">&nbsp;</label></h4>
+
+<div style="background:black;color:white;">
+<h3>&nbsp;</h3>
+</div>
+
+<script scr="scripts.js">
+
+function Comenzar() {
+	MostrarMenus('menu_abms');
+	
+	var url=document.URL;
+	var codigo=url.search("=");
+	if (codigo==-1) NuevoID();
+	else { //--Si llego con codigo desde listado
+		codigo=url.substr(codigo+1);
+		document.getElementById("codigo").value=codigo;
+		BusquedaPersona(codigo);
+	}
+}
+
+function SeleccionarTipo() {
+	switch (document.getElementById("tipo").selectedIndex){
+		case 0: //--Cliente
+			document.getElementById("cargos").selectedIndex="0";
+			HabilitarNuevo(2);
+			document.getElementById("nuevo_cargo").value="";
+			document.getElementById("sector_empleados").style.display="none";
+			
+			document.getElementById("empresas").selectedIndex="0";
+			HabilitarNuevo(3);
+			document.getElementById("nueva_empresa").value="";
+			document.getElementById("sector_proveedores").style.display="none";
+			break;
+		case 1: //--Empleado
+			document.getElementById("sector_empleados").style.display="block";
+			
+			document.getElementById("cargos").selectedIndex="1";
+			HabilitarNuevo(2);
+			document.getElementById("empresas").selectedIndex="0";
+			document.getElementById("nueva_empresa").value="";
+			document.getElementById("sector_proveedores").style.display="none";
+			break;
+		case 2: //--Proveedor
+			document.getElementById("empresas").selectedIndex="1";
+			HabilitarNuevo(3);
+			document.getElementById("cargos").selectedIndex="0";
+			document.getElementById("nuevo_cargo").value="";
+			document.getElementById("sector_empleados").style.display="none";
+			
+			document.getElementById("sector_proveedores").style.display="block";
+			break;
+	}
+}
+
+function HabilitarLocalidades(indice, nuevo) {
+	var provincia=document.getElementById("provincias").selectedIndex;
+	if (provincia=="0") {
+		document.getElementById("localidades").disabled=true;
+		document.getElementById("localidades").length=1;
+		document.getElementById("localidades").selectedIndex="0"
+		document.getElementById("borrar_localidad").style.visibility="hidden";
+		document.getElementById("agregar_localidad").style.visibility="hidden";
+		document.getElementById("texto_localidad").style.visibility="hidden";
+		document.getElementById("nueva_localidad").value="";
+		document.getElementById("nueva_localidad").style.visibility="hidden";
+	}
+	else {
+		document.getElementById("localidades").disabled=false;
+		TraerLocalidades(provincia,indice,nuevo);
+	}
+}
+
+function HabilitarNuevo(elemento) {	
+	var lista; var borrar; var agregar; var texto; var nuevo;
+	switch (elemento) {
+		case 1: //--localidad
+			lista=document.getElementById("localidades").selectedIndex;
+			borrar=document.getElementById("borrar_localidad");
+			agregar=document.getElementById("agregar_localidad");
+			texto=document.getElementById("texto_localidad");
+			nuevo=document.getElementById("nueva_localidad");
+		break;
+		case 2: //--cargo
+			lista=document.getElementById("cargos").selectedIndex;
+			borrar=document.getElementById("borrar_cargo");
+			agregar=document.getElementById("agregar_cargo");
+			texto=document.getElementById("texto_cargo");
+			nuevo=document.getElementById("nuevo_cargo");
+		break;
+		case 3: //--empleado
+			lista=document.getElementById("empresas").selectedIndex;
+			borrar=document.getElementById("borrar_empresa");
+			agregar=document.getElementById("agregar_empresa");
+			texto=document.getElementById("texto_empresa");
+			nuevo=document.getElementById("nueva_empresa");
+		break;
+	}
+	
+	if (lista=="0") {
+		borrar.style.visibility="hidden";
+		agregar.style.visibility="visible";
+		texto.style.visibility="visible";
+		nuevo.style.visibility="visible";
+	}
+	else {
+		borrar.style.visibility="visible";
+		agregar.style.visibility="hidden";
+		texto.style.visibility="hidden";
+		nuevo.value="";
+		nuevo.style.visibility="hidden";
+	}
+}
+
+function AgregarElemento(elemento) {
+	var aceptar=false;	
+	switch (elemento) {
+		case 1:
+		var provincias =document.getElementById("provincias");
+		var provincia = provincias.options[provincias.selectedIndex].text;
+		var localidad = document.getElementById("nueva_localidad").value;
+		if (localidad!="") aceptar=window.confirm("¿Desea agregar la localidad de "+localidad+" a la provincia de "+provincia+"?\n(asegurese de que esta no encuentre ya en la lista)");
+		if (aceptar) GuardarNuevaLocalidad(localidad,provincias.selectedIndex);		
+		break;
+		
+		case 2:
+		var cargo = document.getElementById("nuevo_cargo").value;
+		if (cargo!="") aceptar=window.confirm("¿Desea agregar el cargo "+cargo+"?\n(asegurese de que esta no encuentre ya en la lista)");
+		if (aceptar) GuardarNuevoElemento(cargo, elemento);
+		break;
+		
+		case 3:
+		var empresa = document.getElementById("nueva_empresa").value;
+		if (empresa!="") aceptar=window.confirm("¿Desea agregar la empresa "+empresa+"?\n(asegurese de que esta no encuentre ya en la lista)");
+		if (aceptar) GuardarNuevoElemento(empresa, elemento);
+		break;
+	}
+}
+
+function HabilitarCampos(activo) {
+	if (activo==1) {
+		document.getElementById("nombre").disabled=false;
+	    document.getElementById("apellido").disabled=false;
+		document.getElementById("tipo").disabled=false;
+		document.getElementById("dni").disabled=false;
+		document.getElementById("domicilio").disabled=false;
+		document.getElementById("telefono").disabled=false;
+		document.getElementById("nacimiento").disabled=false;
+		document.getElementById("provincias").disabled=false;
+		document.getElementById("localidades").disabled=false;
+		document.getElementById("borrar_localidad").disabled=false;
+		document.getElementById("agregar_localidad").disabled=false;
+		document.getElementById("nueva_localidad").disabled=false;
+		document.getElementById("cargos").disabled=false;
+		document.getElementById("borrar_cargo").disabled=false;
+		document.getElementById("agregar_cargo").disabled=false;
+		document.getElementById("nuevo_cargo").disabled=false;
+		document.getElementById("empresas").disabled=false;
+		document.getElementById("borrar_empresa").disabled=false;
+		document.getElementById("agregar_empresa").disabled=false;
+		document.getElementById("nueva_empresa").disabled=false;
+		
+		document.getElementById("borrar").value="Borrar Persona";
+		document.getElementById("guardar").disabled=false;
+	}
+	else {
+		document.getElementById("nombre").disabled=true;
+	    document.getElementById("apellido").disabled=true;
+		document.getElementById("tipo").disabled=true;
+		document.getElementById("dni").disabled=true;
+		document.getElementById("domicilio").disabled=true;
+		document.getElementById("telefono").disabled=true;
+		document.getElementById("nacimiento").disabled=true;
+		document.getElementById("provincias").disabled=true;
+		document.getElementById("localidades").disabled=true;
+		document.getElementById("borrar_localidad").disabled=true;
+		document.getElementById("agregar_localidad").disabled=true;
+		document.getElementById("nueva_localidad").disabled=true;
+		document.getElementById("cargos").disabled=true;
+		document.getElementById("borrar_cargo").disabled=true;
+		document.getElementById("agregar_cargo").disabled=true;
+		document.getElementById("nuevo_cargo").disabled=true;
+		document.getElementById("empresas").disabled=true;
+		document.getElementById("borrar_empresa").disabled=true;
+		document.getElementById("agregar_empresa").disabled=true;
+		document.getElementById("nueva_empresa").disabled=true;
+		
+		document.getElementById("borrar").value="Restaurar Persona";
+		document.getElementById("guardar").disabled=true;
+	}
+};
+
+
+function TraerCargosProveedores(nuevo) { //--MODO 0
+	var datos="modo=0";
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			var resultados = ajax.responseText.split("/");
+			
+			//--Cargos
+			var cargos=resultados[0].split("|");						
+			var lista_cargos=document.getElementById("cargos");
+			lista_cargos.length=1;
+			for (var i=0; i<cargos.length-1; i++) {
+				var cargo = document.createElement("option");
+				cargo.text=cargos[i];
+				lista_cargos.add(cargo);
+			}
+			if (nuevo==2) lista_cargos.selectedIndex=lista_cargos.length-1;
+			else lista_cargos.selectedIndex=0;
+			
+			//--Proveedores
+			var empresas=resultados[1].split("|");
+			var lista_empresas=document.getElementById("empresas");
+			lista_empresas.length=1;
+			for (var i=0; i<empresas.length-1; i++) {
+				var empresa = document.createElement("option");
+				empresa.text=empresas[i];
+				lista_empresas.add(empresa);
+			}
+			if (nuevo==3) lista_empresas.selectedIndex=lista_empresas.length-1;
+			else lista_empresas.selectedIndex=0;
+			
+			if (nuevo==2 || nuevo==3) HabilitarNuevo(elemento);
+		}
+	};
+	ajax.send(datos);
+}
+
+function BusquedaPersona(codigo) { //--MODO 1
+	var datos="modo=1";
+	datos+="&codigo="+codigo;
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+        	var resultados = ajax.responseText.split("|");
+			document.getElementById("sugerencias_nombre").innerHTML="";
+			document.getElementById("sugerencias_apellido").innerHTML="";
+			if (resultados[0]=="") {
+				document.getElementById("formulario").reset();
+				document.getElementById("estado").innerHTML="Personsa inexistente.";
+				HabilitarCampos(0);
+				document.getElementById("borrar").disabled=true;
+				document.getElementById("guardar").disabled=true;
+			}
+			else {
+				document.getElementById("nombre").value=resultados[0];
+				document.getElementById("apellido").value=resultados[1];
+				document.getElementById("tipo").selectedIndex=resultados[2];
+				SeleccionarTipo();
+				document.getElementById("dni").value=resultados[3]
+				document.getElementById("domicilio").value=resultados[4];
+				document.getElementById("telefono").value=resultados[5];
+				document.getElementById("nacimiento").value=resultados[6];
+				
+				
+				if (resultados[8]!="") {
+					document.getElementById("provincias").selectedIndex=resultados[9];
+					HabilitarLocalidades(parseInt(resultados[8]), false);
+				}
+				else {
+					document.getElementById("provincias").selectedIndex=0;
+					HabilitarLocalidades(0, false);
+				}
+				
+				
+				if (resultados[2]==1 || resultados[2]==2) { //--Si es empleado o proveedor
+					var lista;
+					var codigo="";
+					var elemento=parseInt(resultados[10]);
+					if (resultados[2]==1) //--cargo del empleado
+						lista=document.getElementById("cargos");
+					else if (resultados[2]==2) //--empresa del proveedor
+						lista=document.getElementById("empresas");
+						
+					lista.selectedIndex=0;
+					for (var i=0; i<lista.length; i++) {
+						codigo=lista.options[i].text.split("-");
+						codigo=codigo[0];
+						if (codigo==elemento) {
+							lista.selectedIndex=i;
+							break;
+						}
+					}
+					HabilitarNuevo(parseInt(resultados[2])+1);
+				}
+				
+								
+				if (resultados[7]==="0") //--Articulo dado de baja
+					document.getElementById("estado").innerHTML="Persona dada de baja.";
+				else
+					document.getElementById("estado").innerHTML="&nbsp;"
+				HabilitarCampos(resultados[7]);
+				document.getElementById("borrar").disabled=false;
+			}
+		}
+	};
+	ajax.send(datos);
+}
+
+function NuevoID() { //--MODO 2
+	var datos="modo=2";
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			HabilitarCampos(1);
+			SeleccionarTipo();
+			document.getElementById("sugerencias_nombre").innerHTML="";
+			document.getElementById("sugerencias_apellido").innerHTML="";
+			document.getElementById("codigo").value=parseInt(ajax.responseText)+1;
+			document.getElementById("estado").innerHTML="&nbsp;"
+			document.getElementById("borrar").disabled=true;
+			TraerCargosProveedores(0);
+		}
+	};
+	ajax.send(datos);
+}
+
+function GuardarPersona() { //--MODO 3
+	var datos="modo=3";
+	datos+="&codigo="+document.getElementById("codigo").value;
+	
+	datos+="&tipo="+document.getElementById("tipo").selectedIndex;
+	
+	datos+="&nombre="+document.getElementById("nombre").value;
+	datos+="&apellido="+document.getElementById("apellido").value;
+	datos+="&dni="+document.getElementById("dni").value;
+	datos+="&domicilio="+document.getElementById("domicilio").value;
+	
+	var telefono=document.getElementById("telefono").value;
+	if (telefono=="0") telefono="";
+	datos+="&telefono="+telefono;
+	
+	datos+="&nacimiento="+document.getElementById("nacimiento").value;
+	
+	var localidad=document.getElementById("localidades");
+	if (localidad.selectedIndex>0) {
+		localidad=localidad.options[localidad.selectedIndex].text.split("-");
+		localidad=localidad[0];
+	} 
+	else localidad="";
+	datos+="&localidad="+localidad;
+	
+	var cargo=document.getElementById("cargos");
+	if (cargo.selectedIndex>0) {
+		cargo=cargo.options[cargo.selectedIndex].text.split("-");
+		cargo=cargo[0];
+	} 
+	else cargo="";
+	datos+="&cargo="+cargo;
+	
+	var empresa=document.getElementById("empresas");
+	if (empresa.selectedIndex>0) {
+		empresa=empresa.options[empresa.selectedIndex].text.split("-");
+		empresa=empresa[0];
+	} 
+	else empresa="";
+	datos+="&empresa="+empresa;
+		
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			document.getElementById("estado").innerHTML=ajax.responseText;
+		}
+	};
+	ajax.send(datos);	
+}
+
+function BorrarPersona() { //--MODO 4
+	var datos="modo=4";
+	var codigo=document.getElementById("codigo").value;
+	datos+="&codigo="+codigo;
+	var res="";
+	
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			res=ajax.responseText;
+			res=res.split("-");
+			document.getElementById("estado").innerHTML=res[1];
+			HabilitarCampos(res[0]);
+		}
+	};
+	ajax.send(datos);
+	
+}
+
+function TraerLocalidades(provincia, indice, nuevo) { //--MODO 5
+	var datos="modo=5";
+	datos+="&provincia="+provincia;
+	
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			var localidades=ajax.responseText.split("|");				
+			var lista_localidades=document.getElementById("localidades");
+			lista_localidades.length=1;
+			for (var i=0; i<localidades.length-1; i++) {
+				var localidad = document.createElement("option");
+				localidad.text=localidades[i];
+				lista_localidades.add(localidad);
+			}
+						
+			if (indice>0) {
+				if (nuevo==false) { //--Si lo llama BusquedaPersona, obtener indice dado codigo
+					var codigo="0";
+					for (var i=0; lista_localidades.length; i++) {
+						codigo=lista_localidades.options[i].text.split("-");
+						codigo=codigo[0];
+						if (codigo==indice) {
+							indice=i;
+							break;
+						}
+					}
+				}
+				lista_localidades.selectedIndex=indice;
+			}
+			else if (lista_localidades.length>1) lista_localidades.selectedIndex=1;
+			HabilitarNuevo(1);
+		}
+	};
+	ajax.send(datos);
+}
+
+function GuardarNuevaLocalidad(localidad,provincia) { //--MODO 6
+	var datos="modo=6";
+	datos+="&localidad="+localidad; //--texto
+	datos+="&provincia="+provincia; //--codigo
+		
+	var localidades=document.getElementById("localidades");
+
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			var respuesta=ajax.responseText.split("|");
+			document.getElementById("estado").innerHTML=respuesta[0]; 
+			if (respuesta[1]=="OK") {
+				TraerLocalidades(provincia,localidades.length,true);
+			}
+		}
+	};
+	ajax.send(datos);	
+}
+
+function GuardarNuevoElemento(nombre,elemento) { //--MODO 7
+	var datos="modo=7";
+	datos+="&nombre="+nombre; //--texto
+	datos+="&submodo="+elemento; //--submodo
+	
+	if (elemento==2) {
+		lista_elementos=document.getElementById("cargos");
+		nuevo_elemento=document.getElementById("nuevo_cargo");
+	}
+	else if (elemento==3) {
+		lista_elementos=document.getElementById("empresas");
+		nuevo_elemento=document.getElementById("nueva_empresa");
+	}
+
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_personas.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			var respuesta=ajax.responseText.split("|");
+			document.getElementById("estado").innerHTML=respuesta[0]; 
+			if (respuesta[1]=="OK") {
+				TraerCargosProveedores(elemento);
+			}
+		}
+	};
+	ajax.send(datos);	
+}
+
+function BorrarElemento(elemento) { //--MODO 8
+	var aceptar=false;
+	var texto="";
+	var codigo;
+	var lista;
+	switch (elemento) {
+		case 1: //--localidades
+		texto="esta localidad";
+		lista=document.getElementById("localidades");
+		var provincia=document.getElementById("provincias").selectedIndex;
+		break;
+		case 2: //--cargos
+		texto="este cargo";
+		lista=document.getElementById("cargos");
+		break;
+		case 3: //--Proveedores/empresas
+		texto="esta empresa";
+		lista=document.getElementById("empresas");
+		break;
+	}
+	codigo=lista.options[lista.selectedIndex].value.split("-");
+	codigo=codigo[0];
+	
+	aceptar=window.confirm("¿Desea eliminar permanente "+texto+"? (ya no será visible)");
+	
+	if (aceptar) {
+		var datos="modo=8";
+		datos+="&codigo="+codigo; //--codigo
+		datos+="&submodo="+elemento; //--submodo
+		
+		ajax=objetoAjax();
+		ajax.open("POST", "abm_personas.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+			if (ajax.readyState==4 && ajax.status==200) {
+				document.getElementById("estado").innerHTML=ajax.responseText;
+				if (elemento==1) TraerLocalidades(provincia,true);
+				else TraerCargosProveedores(elemento);
+			}
+		};
+		ajax.send(datos);	
+		}
+	}
+
+function TraerSugerencias(nombre, campo) { //--MODO 9
+	var datos="modo=9";
+	datos+="&nombre="+nombre;
+			
+	var suferencias;
+	if (campo=="0")	sugerencias=document.getElementById("sugerencias_nombre");
+	else sugerencias=document.getElementById("sugerencias_apellido");
+	sugerencias.innerHTML="";
+	
+	if (nombre!="")	{
+		ajax=objetoAjax();
+		ajax.open("POST", "abm_personas.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+    		if (ajax.readyState==4 && ajax.status==200) {
+				var resultados=ajax.responseText;
+				resultados=resultados.split("|");
+				
+				for (var i=0; i<resultados.length-1; i++) {
+					var sugerencia=document.createElement("option");
+					sugerencia.value=resultados[i];
+					sugerencias.appendChild(sugerencia);
+				}
+			}
+		};
+		ajax.send(datos);
+	}
+}
+
+function SeleccionarSugerencia(texto, campo) {
+	var lista;
+	if (campo=="0") lista=document.getElementById("sugerencias_nombre").childNodes;
+	else lista=document.getElementById("sugerencias_apellido").childNodes;
+	
+	for (var i=0; i<lista.length; i++) {
+		if (texto==lista[i].value) {
+			texto=texto.split("-");
+			document.getElementById("codigo").value=texto[0];
+			BusquedaPersona(texto[0]);
+			break;
+		}
+	}
+}
+
+</script>
+</body>
+
+</html>

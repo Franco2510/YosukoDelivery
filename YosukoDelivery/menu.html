@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sistema de Yosuko Delibery</title>
+
+<style>
+div {
+    box-shadow: 5px 5px 5px #888888;
+}
+</style>
+
+<script src="scripts.js?6"></script>
+
+</head>
+
+<body onload="ComprobarSesion();EsconderMenus();">
+
+<div id="menu" style="background:#ccccff;">
+<h3 align="right"><a href="logout.php">Cerrar Sesión</a></h3>
+<h3 align="right">&nbsp;</h3>
+<h2 align="center">SISTEMA DE YOSUKO DELIVERY</h2>
+<table width="331" border="4" align="center" style="background:white;">
+  <tr>
+    <th width="47" scope="col"><input type="submit" onclick="MostrarMenus('menu_abms')" name="abms" id="abms" value="ABMs" /></th>
+    <th width="62" scope="col"><input type="submit" onclick="MostrarMenus('menu_listas')"name="listas" id="listas" value="Listados" /></th>
+    <th width="65" scope="col"><input type="submit" onclick="MostrarMenus('menu_facturas')" name="facturas" id="facturas" value="Facturas" /></th>
+    <th width="58" scope="col"><input type="submit" onclick="MostrarMenus('menu_ajustes')" name="ajustes" id="ajustes" value="Ajustes" /></th>
+    <th width="75" scope="col"><input type="submit" onclick="MostrarMenus('menu_informes')" name="informes" id="informes" value="Informes" /></th>
+  </tr>
+</table>
+
+<p></p>
+
+<div id="menu_abms">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_articulos.html')" name="abm_articulos" id="abm_articulos" value="ABM Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_personas.html')" name="abm_personas" id="abm_personas" value="ABM Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_listas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_articulos.html')" name="lista_articulos" id="lista_articulos" value="Listado de Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_personas.html')" name="lista_personas" id="lista_personas" value="Padrón de Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_facturas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_compra.html')" name="factura_compra" id="factura_compra" value="Facturar Compra" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_venta.html')" name="factura_venta" id="factura_venta" value="Facturar Venta" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_ajustes">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_stock.html')" name="ajuste_stock" id="ajuste_stock" value="Ajuste de Stock" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_caja.html')" name="ajuste_caja" id="ajuste_caja" value="Ajuste de Caja" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_informes">
+<table width="495" border="1" align="center">
+  <tr>
+    <th width="114" scope="col"><input type="submit" onclick="CargarPagina('informe_stock.html')" name="informe_stock" id="informe_stock" value="Informe de Stock" /></th>
+    <th width="109" scope="col"><input type="submit" onclick="CargarPagina('informe_caja.html')" name="informe_caja" id="informe_caja" value="Informe de Caja" /></th>
+    <th width="125" scope="col"><input type="submit" onclick="CargarPagina('informe_articulo.html')" name="informe_articulo" id="informe_articulo" value="Ventas por Articulo" /></th>
+    <th width="253" scope="col"><input type="submit" onclick="CargarPagina('informe_cliente.html')" name="informe_cliente" id="informe_cliente" value="Ventas por Cliente" /></th>
+  </tr>
+</table>
+
+</div>
+</div>
+
+<script src="scripts.js">
+function Comenzar() {
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Facturación de Compra</title>
+
+<style>
+div {
+    box-shadow: 5px 5px 5px #888888;
+}
+</style>
+
+<script src="scripts.js?6"></script>
+
+</head>
+
+<body onload="ComprobarSesion();">
+
+<div id="menu" style="background:#ffcccc;">
+<h3 align="right"><a href="logout.php">Cerrar Sesión</a></h3>
+<h3 align="left"><a href="menu.html">Volver al Menú</a></h3>
+<h2 align="center">SISTEMA DE YOSUKO DELIVERY</h2>
+<table width="331" border="4" align="center" style="background:white;">
+  <tr>
+    <th width="47" scope="col"><input type="submit" onclick="MostrarMenus('menu_abms')" name="abms" id="abms" value="ABMs" /></th>
+    <th width="62" scope="col"><input type="submit" onclick="MostrarMenus('menu_listas')"name="listas" id="listas" value="Listados" /></th>
+    <th width="65" scope="col"><input type="submit" onclick="MostrarMenus('menu_facturas')" name="facturas" id="facturas" value="Facturas" /></th>
+    <th width="58" scope="col"><input type="submit" onclick="MostrarMenus('menu_ajustes')" name="ajustes" id="ajustes" value="Ajustes" /></th>
+    <th width="75" scope="col"><input type="submit" onclick="MostrarMenus('menu_informes')" name="informes" id="informes" value="Informes" /></th>
+  </tr>
+</table>
+
+<p></p>
+
+<div id="menu_abms">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_articulos.html')" name="abm_articulos" id="abm_articulos" value="ABM Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_personas.html')" name="abm_personas" id="abm_personas" value="ABM Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_listas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_articulos.html')" name="lista_articulos" id="lista_articulos" value="Listado de Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_personas.html')" name="lista_personas" id="lista_personas" value="Padrón de Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_facturas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_compra.html')" name="factura_compra" id="factura_compra" value="Facturar Compra" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_venta.html')" name="factura_venta" id="factura_venta" value="Facturar Venta" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_ajustes">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_stock.html')" name="ajuste_stock" id="ajuste_stock" value="Ajuste de Stock" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_caja.html')" name="ajuste_caja" id="ajuste_caja" value="Ajuste de Caja" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_informes">
+<table width="495" border="1" align="center">
+  <tr>
+    <th width="114" scope="col"><input type="submit" onclick="CargarPagina('informe_stock.html')" name="informe_stock" id="informe_stock" value="Informe de Stock" /></th>
+    <th width="109" scope="col"><input type="submit" onclick="CargarPagina('informe_caja.html')" name="informe_caja" id="informe_caja" value="Informe de Caja" /></th>
+    <th width="125" scope="col"><input type="submit" onclick="CargarPagina('informe_articulo.html')" name="informe_articulo" id="informe_articulo" value="Ventas por Articulo" /></th>
+    <th width="253" scope="col"><input type="submit" onclick="CargarPagina('informe_cliente.html')" name="informe_cliente" id="informe_cliente" value="Ventas por Cliente" /></th>
+  </tr>
+</table>
+
+</div>
+</div>
+
+<p></p>
+
+<div id="encabezado" style="background:black;color:white;">
+<h3 align="center">Factura de Compra</h3>
+</div>
+
+<div align="center"></div>
+<form action="factura_venta.php" method="get" name="formulario" id="formulario"/>
+<table id="sector_factura" width="800" align="center" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+  	<td align="center"><input type="button" name="nuevo" id="nuevo" value="Nueva Factura" onclick="NuevaFactura()"/></td>
+    <td align="center"><label for="factura">N° de Factura<br/>C</label>
+      <input type="text" size="16" maxlength="16" name="factura" id="factura" value="0"
+      list="sugerencias_factura" onclick="this.select();" autocomplete="off"
+      onkeyup="ValidarTexto(this.id);TraerSugerenciasFactura(this.value);"
+      oninput="SeleccionarSugerenciaFactura(this.value);"/>
+      <datalist id="sugerencias_factura"></datalist>
+      </td>
+    <td align="center"><label for="fecha">Fecha</label><br/>
+      <input type="date" name="fecha" id="fecha" /></td>
+  </tr>
+  <tr>
+    <tr>
+      <td colspan="4"><hr></td>
+    </tr>
+  </tr>
+</table>
+
+<table id="sector_cliente" width="800" align="center" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td align="center"><label for="cliente">Proveedor</label><br/>
+      <input type="text" size="20" maxlength="30" name="cliente" id="cliente"
+      list="sugerencias_cliente" onkeyup="ValidarTexto(this.id);TraerSugerenciasCliente(this.value);"
+      onclick="this.select();" oninput="SeleccionarSugerenciaCliente(this.value);" autocomplete="off" />
+      <datalist id="sugerencias_cliente"></datalist></td>
+    <td align="left" valign="bottom"><input type="button" name="nuevo_cliente" id="nuevo_cliente" value="Nuevo Cliente" onclick="window.open('abm_personas.html')"/></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td colspan="2"><b>ID:</b><br/><label id="codigo" ></label></td>
+    <td><b>DNI:</b><br/><label id="dni"></label></td>
+    <td><b>Empresa:</b><br/><label id="empresa"></label></td>
+  </tr>
+  <tr>
+    <td colspan="2"><b>Nombre y Apellido:</b><br/><label id="nombre"></label></td>
+    <td><b>Localidad:</b><br/><label id="localidad"></label></td>
+    <td><b>Provincia:</b><br/><label id="provincia"></label></td>
+  </tr>
+  <tr>
+  	<td colspan="2"><b>Domicilio:</b><br/><label id="domicilio"></label></td>
+    <td><b>Teléfono:</b><br/><label id="telefono"></label></td>
+    <td><b>F. Nacimiento:</b><br/><label id="nacimiento"></label></td>
+  </tr>
+</table>
+
+<p>&nbsp;</p>
+
+<table id="sector_detalles" width="800" align="center" border="1" cellspacing="0" cellpadding="1">
+  <tr style='font-weight:bold; color:white;' bgcolor='#000000'>
+    <td width="60">Código</td>
+    <td width="441">Detalle</td>
+    <td width="79">Precio Unitario</td>
+    <td width="83">Cantidad</td>
+    <td width="115">Total</td>
+  </tr>
+  <tr>
+    <td><label id="detalle1_codigo"></label></td>
+    <td><input type="text" style="width:100%" size="30" maxlength="30" name="detalle1_nombre" id="detalle1_nombre"
+      list="sugerencias_articulo" onkeyup="ValidarTexto(this.id);TraerSugerenciasArticulo(this.value,1);"
+      onclick="this.select();" oninput="SeleccionarSugerenciaArticulo(this.value,1);" autocomplete="off" />
+    <datalist id="sugerencias_articulo"></datalist></td>
+    <td><label id="detalle1_precio">0</label></td>
+    <td><input type="text" style="width:80%" size="9" maxlength="9" name="detalle1_cantidad" id="detalle1_cantidad"
+      onfocus="this.select();" onkeyup="ValidarEntero(this.id);CalcularTotal(1);" autocomplete="off" value="0"/>
+      <label id="detalle1_medida">u</label></td>
+    <td><label id="detalle1_total">0</label></td>
+  </tr>
+</table>
+
+<br/br>
+
+<table id="sector_totales" width="800" align="center" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="60">&nbsp;</td>
+    <td width="441">&nbsp;</td>
+    <td width="79">&nbsp;</td>
+    <td width="83"><b>Sub-Total</b></td>
+    <td width="115"><label id="subtotal">0</label></td>
+  </tr>
+  <tr>
+  	<td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><b>IVA (21%)</b></td>
+    <td><label id="iva">0</label></td>
+  </tr>
+  <tr>
+  	<td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><b>Total</b></td>
+    <td><label id="total">0</label></td>
+  </tr>
+  	<td colspan="5"><hr></td>
+  <tr>
+  </tr> 
+</table>
+
+<br/br>
+
+<table align="center" width="800" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+  	<td align="center">&nbsp;</td>
+    <td align="center" colspan="2"><input type="button" name="grabar" id="grabar" value="Grabar Factura" onclick="GrabarFactura()"/></td>
+    <td align="center">&nbsp;</td>
+  </tr>
+</table>
+
+
+</form>
+
+<h4 align="center"><label id="estado">&nbsp;</label></h4>
+
+<div style="background:black;color:white;">
+<h3>&nbsp;</h3>
+</div>
+
+<script scr="scripts.js">
+
+function Comenzar() {
+	MostrarMenus('menu_facturas');
+	
+	var url=document.URL;
+	var codigo=url.search("=");
+	if (codigo==-1) NuevaFactura();
+	else { //--Si llego con numero factura
+		codigo=url.substr(codigo+1);
+		document.getElementById("codigo").value=codigo;
+		TraerFactura(codigo);
+	}
+}
+
+function TraerSugerenciasCliente(nombre) { //--MODO 0
+	var datos="modo=0";
+	datos+="&nombre="+nombre;
+			
+	var suferencias;
+	sugerencias=document.getElementById("sugerencias_cliente");
+	sugerencias.innerHTML="";
+	
+	if (nombre!="")	{
+		ajax=objetoAjax();
+		ajax.open("POST", "factura_compra.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+    		if (ajax.readyState==4 && ajax.status==200) {
+				var resultados=ajax.responseText;
+				resultados=resultados.split("|");
+				
+				for (var i=0; i<resultados.length-1; i++) {
+					var sugerencia=document.createElement("option");
+					sugerencia.value=resultados[i];
+					sugerencias.appendChild(sugerencia);
+				}
+			}
+		};
+		ajax.send(datos);
+	}
+}
+
+function SeleccionarSugerenciaCliente(texto) {
+	var lista;
+	lista=document.getElementById("sugerencias_cliente").childNodes;
+	
+	for (var i=0; i<lista.length; i++) {
+		if (texto==lista[i].value) {
+			texto=texto.split("-");
+			CrearFila();
+			TraerDatosCliente(texto[0]);
+			break;
+		}
+	}
+}
+
+function TraerDatosCliente(codigo) { //--MODO 1
+	var datos="modo=1";
+	datos+="&codigo="+codigo;
+		
+	if (nombre!="")	{
+		ajax=objetoAjax();
+		ajax.open("POST", "factura_compra.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+    		if (ajax.readyState==4 && ajax.status==200) {
+				var resultados=ajax.responseText;
+				resultados=resultados.split("|");
+				
+				document.getElementById("codigo").innerHTML=resultados[0];
+				document.getElementById("nombre").innerHTML=resultados[1];
+				document.getElementById("dni").innerHTML=resultados[2];
+				document.getElementById("domicilio").innerHTML=resultados[3];
+				document.getElementById("telefono").innerHTML=resultados[4];
+				document.getElementById("nacimiento").innerHTML=resultados[5];
+				document.getElementById("provincia").innerHTML=resultados[6];
+				document.getElementById("localidad").innerHTML=resultados[7];
+				document.getElementById("empresa").innerHTML=resultados[8];		
+			}
+		};
+		ajax.send(datos);
+	}
+}
+
+function TraerSugerenciasArticulo(nombre,fila) { //--MODO 2
+	//--Si el campo nombre esta vacio, limpiar la fila
+	if (nombre=="") {
+		document.getElementById("detalle"+fila+"_codigo").innerHTML="";
+		document.getElementById("detalle"+fila+"_nombre").value="";
+		document.getElementById("detalle"+fila+"_precio").innerHTML="0";
+		document.getElementById("detalle"+fila+"_cantidad").value="0";
+		document.getElementById("detalle"+fila+"_total").innerHTML="0";
+		BorrarFila();	
+	}
+	else {
+	  var datos="modo=2";
+	  datos+="&nombre="+nombre;
+	  
+	  var sugerencias=document.getElementById("sugerencias_articulo");
+	  sugerencias.innerHTML="";
+	  
+	  if (nombre!="")	{
+		  ajax=objetoAjax();
+		  ajax.open("POST", "factura_compra.php");
+		  ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		  ajax.onreadystatechange=function() {
+			  if (ajax.readyState==4 && ajax.status==200) {
+				  var resultados=ajax.responseText;
+				  resultados=resultados.split("|");
+				  
+				  for (var i=0; i<resultados.length-1; i++) {
+					  var sugerencia=document.createElement("option");
+					  sugerencia.value=resultados[i];
+					  sugerencias.appendChild(sugerencia);
+				  }
+			  }
+		  };
+		  ajax.send(datos);
+	  }
+	}
+}
+
+function SeleccionarSugerenciaArticulo(texto, fila) {
+	var lista;
+	lista=document.getElementById("sugerencias_articulo").childNodes;
+	
+	for (var i=0; i<lista.length; i++) {
+		if (texto==lista[i].value) {
+			texto=texto.split("-");
+			CrearFila(fila);
+			TraerDatosArticulo(texto[0], fila);		
+			break;
+		}
+	}
+}
+
+function TraerDatosArticulo(codigo, fila) { //--MODO 3
+	var datos="modo=3";
+	datos+="&codigo="+codigo;
+		
+	if (nombre!="")	{
+		ajax=objetoAjax();
+		ajax.open("POST", "factura_compra.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+    		if (ajax.readyState==4 && ajax.status==200) {
+				var resultados=ajax.responseText;
+				resultados=resultados.split("|");
+								
+				document.getElementById("detalle"+fila+"_codigo").innerHTML=resultados[0];
+				document.getElementById("detalle"+fila+"_nombre").value=resultados[1];
+				document.getElementById("detalle"+fila+"_precio").innerHTML=resultados[2];
+				document.getElementById("detalle"+fila+"_cantidad").value=1;
+				if (resultados[3]=="1") document.getElementById("detalle"+fila+"_medida").innerHTML="g";
+				else document.getElementById("detalle"+fila+"_medida").innerHTML="u";
+				
+				CalcularTotal(fila)	;
+			}
+		};
+		ajax.send(datos);
+	}
+}
+
+function CalcularTotal(fila) {
+	var precio=document.getElementById("detalle"+fila+"_precio");
+	var cantidad=document.getElementById("detalle"+fila+"_cantidad");
+	var medida=document.getElementById("detalle"+fila+"_medida").innerHTML;
+	var total=document.getElementById("detalle"+fila+"_total");
+	
+	if (medida=="g") total.innerHTML=(parseFloat(precio.innerHTML)*parseInt(cantidad.value)/1000);
+	else total.innerHTML=parseFloat(precio.innerHTML)*parseInt(cantidad.value);
+	
+	CalcularTotales();
+}
+
+function CalcularTotales() {
+	var tabla=document.getElementById("sector_detalles");
+	var filas=tabla.rows.length;
+	
+	var subtotal=0;
+	var iva=0;
+	var total=0;
+	
+	//--Calculo para factura B, iva no discriminado
+	for (var i=1; i<filas; i++) {
+		subtotal+=parseFloat(document.getElementById("detalle"+i+"_total").innerHTML);
+	}
+	subtotal=subtotal.toFixed(2);
+	
+	iva=subtotal/1.21;
+	iva=iva.toFixed(2);
+	
+	total=total+iva;
+	//total=total.toFixed(2);
+	
+	document.getElementById("subtotal").innerHTML=subtotal;
+	document.getElementById("iva").innerHTML=iva;
+	document.getElementById("total").innerHTML=total;
+}
+
+function CrearFila(indice) {
+	var tabla=document.getElementById("sector_detalles");
+	var filas=tabla.rows.length;
+	
+	var vacio=false; //--si hay filas vacias. Si es asi, no insertar nueva
+	for (var i=1; i<filas; i++) {
+		var codigo=document.getElementById("detalle"+i+"_codigo").innerHTML;
+		if (i!=indice && codigo=="") {vacio=true; break;} //--si 'i' no es la fila que llama a la funcion y esta vacio...
+	}
+	
+	if (vacio==false) {  //&& indice==filas-1
+		var fila=tabla.insertRow();
+		
+		var codigo=fila.insertCell(0);
+		codigo.innerHTML="<label id='detalle"+filas+"_codigo'></label>";
+		
+		var nombre=fila.insertCell(1);
+		nombre.innerHTML="<input type='text' style='width:100%' size='30' maxlength='30' name='detalle"+filas+"_nombre' id='detalle"+filas+"_nombre'\
+      	list='sugerencias_articulo' onkeyup='ValidarTexto(this.id);TraerSugerenciasArticulo(this.value,"+filas+");'\
+      	onclick='this.select();' oninput='SeleccionarSugerenciaArticulo(this.value,"+filas+");' autocomplete='off'/>";
+		
+		var precio=fila.insertCell(2);
+		precio.innerHTML="<label id='detalle"+filas+"_precio'>0</label>";
+		
+		var cantidad=fila.insertCell(3);
+		cantidad.innerHTML="<input type='text' style='width:80%' size='9' maxlength='9' name='detalle"+filas+"_cantidad' id='detalle"+filas+"_cantidad'\
+      	onfocus='this.select();' onkeyup='ValidarEntero(this.id);CalcularTotal("+filas+");' autocomplete='off' value='0'/>\
+		<label id='detalle"+filas+"_medida'>u</label>";
+		
+		var total=fila.insertCell(4);
+		total.innerHTML="<label id='detalle"+filas+"_total'>0</label>";
+	}
+}
+
+function BorrarFila() {
+	var tabla=document.getElementById("sector_detalles");
+	var filas=tabla.rows.length;
+	
+	CalcularTotales();
+	
+	if (filas>2) {
+		penultimo=document.getElementById("detalle"+(filas-2)+"_codigo").innerHTML;
+		ultimo=document.getElementById("detalle"+(filas-1)+"_codigo").innerHTML;
+		if (penultimo=="" && ultimo=="") {
+			tabla.deleteRow(-1);
+			BorrarFila(); //--llamada recursiva para verificar aun hay mas filas vacias arriba
+		}
+	}
+}
+
+function GrabarFactura() { //--MODO 4
+	var factura="C"+document.getElementById("factura").value;
+	var fecha=document.getElementById("fecha").value;
+	var cliente=document.getElementById("codigo").innerHTML;
+	
+	if (cliente=="") {
+		alert("Seleccione un cliente.");
+		return;
+	}
+	
+	var tabla=document.getElementById("sector_detalles");
+	var filas=tabla.rows.length;
+	var codigo="";
+	var nada=true;
+	for (var i=1; i<filas; i++) {
+		codigo=document.getElementById("detalle"+i+"_codigo").innerHTML;
+		if (codigo!="") {
+			nada=false;
+			break;	
+		}		
+	}
+	if (nada) {
+		alert("Ingrese al menos un articulo.");
+		return;
+	}
+
+	var aceptar=confirm("¿Grabar esta factura? (asegurse que los datos esten correctos)");
+	if (aceptar) {
+		var datos="modo=4";
+		datos+="&factura="+factura;
+		datos+="&fecha="+fecha;
+		datos+="&cliente="+cliente;
+				
+		var detalles="";
+		for (var i=1; i<filas; i++) {
+			codigo=document.getElementById("detalle"+i+"_codigo").innerHTML;
+			if (codigo!="") {
+				var cantidad=document.getElementById("detalle"+i+"_cantidad").value;
+				detalles+=codigo+"-";
+				detalles+=cantidad+"|";
+			}		
+		}
+		detalles=detalles.slice(0,-1);
+		datos+="&detalles="+detalles;
+		
+		ajax=objetoAjax();
+		ajax.open("POST", "factura_compra.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+    		if (ajax.readyState==4 && ajax.status==200) {
+				var resultados=ajax.responseText;
+				resultados=resultados.split("|");
+				alert(resultados[0]);
+				if (resultados[1]=="OK") TraerFactura(factura);//NuevaFactura()//location.reload();
+			}
+		};
+		ajax.send(datos);
+	}
+	return;
+}
+
+function TraerSugerenciasFactura(nombre) { //--MODO 5
+	var datos="modo=5";
+	datos+="&nombre="+nombre;
+			
+	var suferencias;
+	sugerencias=document.getElementById("sugerencias_factura");
+	sugerencias.innerHTML="";
+	
+	if (nombre!="")	{
+		ajax=objetoAjax();
+		ajax.open("POST", "factura_compra.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+    		if (ajax.readyState==4 && ajax.status==200) {
+				var resultados=ajax.responseText;
+				resultados=resultados.split("|");
+				
+				for (var i=0; i<resultados.length-1; i++) {
+					var sugerencia=document.createElement("option");
+					sugerencia.value=resultados[i];
+					sugerencias.appendChild(sugerencia);
+				}
+			}
+		};
+		ajax.send(datos);
+	}
+}
+
+function SeleccionarSugerenciaFactura(texto) {
+	var lista;
+	lista=document.getElementById("sugerencias_factura").childNodes;
+	
+	var existe=false; //--si el numero de factura existe, traer factura. Sino, habilitar alta
+	for (var i=0; i<lista.length; i++) {
+		if (texto==lista[i].value) {
+			texto=texto.slice(2);
+			existe=true;
+			break;
+		}
+	}
+	
+	if (existe) {
+		document.getElementById("factura").value=texto;
+		//NuevaFactura();
+		TraerFactura(texto);
+	}
+	else {
+	}
+}
+
+function TraerFactura(numero) { //--MODO 6
+	var datos="modo=6";
+	datos+="&numero="+numero;
+			
+	if (nombre!="")	{
+		ajax=objetoAjax();
+		ajax.open("POST", "factura_compra.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+    		if (ajax.readyState==4 && ajax.status==200) {
+				var resultados=ajax.responseText;
+				resultados=resultados.split("/");
+				
+				//--Datos Factura
+				document.getElementById("factura").value=numero.slice(1);
+						
+				document.getElementById("fecha").value=resultados[0];
+				document.getElementById("fecha").disabled=true;
+						
+				document.getElementById("cliente").value="";
+				document.getElementById("cliente").disabled=true;
+				
+				//--Datos Cliente
+				var cliente=resultados[1].split("|");
+				document.getElementById("codigo").innerHTML=cliente[0];
+				document.getElementById("nombre").innerHTML=cliente[1];
+				document.getElementById("dni").innerHTML=cliente[2];
+				document.getElementById("domicilio").innerHTML=cliente[3];
+				document.getElementById("telefono").innerHTML=cliente[4];
+				document.getElementById("nacimiento").innerHTML=cliente[5];
+				document.getElementById("provincia").innerHTML=cliente[6];
+				document.getElementById("localidad").innerHTML=cliente[7];
+				document.getElementById("empresa").innerHTML=resultados[8];	
+				
+				//--Datos Detalles
+				for (var i=2; i<resultados.length-1; i++) {
+					var detalle=resultados[i].split("|");
+					document.getElementById("detalle"+(i-1)+"_codigo").innerHTML=detalle[0];
+					document.getElementById("detalle"+(i-1)+"_nombre").value=detalle[1];
+					document.getElementById("detalle"+(i-1)+"_nombre").disabled=true;
+					document.getElementById("detalle"+(i-1)+"_precio").innerHTML=detalle[2];
+					document.getElementById("detalle"+(i-1)+"_cantidad").value=detalle[3];
+					document.getElementById("detalle"+(i-1)+"_cantidad").disabled=true;
+					document.getElementById("detalle"+(i-1)+"_medida").innerHTML=detalle[4];
+				
+					CalcularTotal(i-1)	;
+					CrearFila();
+				}
+				fila=document.getElementById("sector_detalles").rows.length-1;
+				document.getElementById("detalle"+(fila)+"_nombre").disabled=true;
+				document.getElementById("detalle"+(fila)+"_cantidad").disabled=true;
+				
+				document.getElementById("grabar").disabled=true;
+			}
+		};
+		ajax.send(datos);
+	}
+}
+
+function NuevaFactura() {	
+	document.getElementById("formulario").reset();
+	
+	//--Colocar Fecha Actual
+	var hoy = new Date();
+	document.getElementById("fecha").value=hoy.getFullYear()
+	+"-"+("0"+(hoy.getMonth()+1)).slice(-2)
+	+"-"+("0"+hoy.getDate()).slice(-2);
+	
+	document.getElementById("fecha").disabled=false;
+	
+	//--Cliente
+	document.getElementById("cliente").disabled=false;
+	
+	document.getElementById("codigo").innerHTML="";
+	document.getElementById("nombre").innerHTML="";
+	document.getElementById("dni").innerHTML="";
+	document.getElementById("domicilio").innerHTML="";
+	document.getElementById("telefono").innerHTML="";
+	document.getElementById("nacimiento").innerHTML="";
+	document.getElementById("provincia").innerHTML="";
+	document.getElementById("localidad").innerHTML="";
+	document.getElementById("empresa").innerHTML="";
+	
+	//--Deralles
+	filas=document.getElementById("sector_detalles").rows.length;
+	for (var i=1; i<filas; i++) {
+		document.getElementById("detalle"+i+"_codigo").innerHTML="";
+	}
+	document.getElementById("detalle1_nombre").disabled=false;
+	document.getElementById("detalle1_precio").innerHTML="0";
+	document.getElementById("detalle1_cantidad").disabled=false;
+	document.getElementById("detalle1_total").innerHTML="0";
+	document.getElementById("detalle1_medida").innerHTML="u";
+	BorrarFila();
+	
+	document.getElementById("subtotal").innerHTML="0";
+	document.getElementById("iva").innerHTML="0";
+	document.getElementById("total").innerHTML="0";
+	
+	document.getElementById("grabar").disabled=false;
+}
+
+
+</script>
+</body>
+
+</html>

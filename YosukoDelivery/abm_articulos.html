@@ -1,0 +1,597 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ABM de Artículos</title>
+
+<style>
+div {
+    box-shadow: 5px 5px 5px #888888;
+}
+</style>
+
+<script src="scripts.js?6"></script>
+
+</head>
+
+<body onload="ComprobarSesion();">
+
+<div id="menu" style="background:#ffffcc;">
+<h3 align="right"><a href="logout.php">Cerrar Sesión</a></h3>
+<h3 align="left"><a href="menu.html">Volver al Menú</a></h3>
+<h2 align="center">SISTEMA DE YOSUKO DELIVERY</h2>
+
+<table width="331" border="4" align="center" style="background:white;">
+  <tr>
+    <th width="47" scope="col"><input type="submit" onclick="MostrarMenus('menu_abms')" name="abms" id="abms" value="ABMs" /></th>
+    <th width="62" scope="col"><input type="submit" onclick="MostrarMenus('menu_listas')"name="listas" id="listas" value="Listados" /></th>
+    <th width="65" scope="col"><input type="submit" onclick="MostrarMenus('menu_facturas')" name="facturas" id="facturas" value="Facturas" /></th>
+    <th width="58" scope="col"><input type="submit" onclick="MostrarMenus('menu_ajustes')" name="ajustes" id="ajustes" value="Ajustes" /></th>
+    <th width="75" scope="col"><input type="submit" onclick="MostrarMenus('menu_informes')" name="informes" id="informes" value="Informes" /></th>
+  </tr>
+</table>
+
+<p></p>
+
+<div id="menu_abms">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_articulos.html')" name="abm_articulos" id="abm_articulos" value="ABM Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('abm_personas.html')" name="abm_personas" id="abm_personas" value="ABM Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_listas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_articulos.html')" name="lista_articulos" id="lista_articulos" value="Listado de Artículos" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('lista_personas.html')" name="lista_personas" id="lista_personas" value="Padrón de Personas" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_facturas">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_compra.html')" name="factura_compra" id="factura_compra" value="Facturar Compra" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('factura_venta.html')" name="factura_venta" id="factura_venta" value="Facturar Venta" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_ajustes">
+<table width="200" border="1" align="center">
+  <tr>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_stock.html')" name="ajuste_stock" id="ajuste_stock" value="Ajuste de Stock" /></th>
+    <th scope="col"><input type="submit" onclick="CargarPagina('ajuste_caja.html')" name="ajuste_caja" id="ajuste_caja" value="Ajuste de Caja" /></th>
+  </tr>
+</table>
+</div>
+
+<div id="menu_informes">
+<table width="495" border="1" align="center">
+  <tr>
+    <th width="114" scope="col"><input type="submit" onclick="CargarPagina('informe_stock.html')" name="informe_stock" id="informe_stock" value="Informe de Stock" /></th>
+    <th width="109" scope="col"><input type="submit" onclick="CargarPagina('informe_caja.html')" name="informe_caja" id="informe_caja" value="Informe de Caja" /></th>
+    <th width="125" scope="col"><input type="submit" onclick="CargarPagina('informe_articulo.html')" name="informe_articulo" id="informe_articulo" value="Ventas por Articulo" /></th>
+    <th width="253" scope="col"><input type="submit" onclick="CargarPagina('informe_cliente.html')" name="informe_cliente" id="informe_cliente" value="Ventas por Cliente" /></th>
+  </tr>
+</table>
+
+</div>
+</div>
+
+<p></p>
+
+<div id="encabezado" style="background:black;color:white;">
+<h3 align="center">ABM de Artículos</h3>
+</div>
+
+<div align="center"></div>
+<form action="abm_articulos.php" method="get" name="formulario" id="formulario"/>
+  <table width="800" border="0" align="center" cellspacing="8">
+    <tr>
+      <th width="204" scope="col"><input type="reset" name="nuevo" id="nuevo" value="Nuevo Artículo" onclick="NuevoID()"/></th>
+      <th colspan="2" scope="col"><label for="codigo">Búsqueda por código </label>
+      <input type="text" size="9" maxlength="9" name="codigo" id="codigo" style="text-align:right" 
+      onclick="this.select();" onblur="ValidarEntero(this.id)"
+      onkeyup="BusquedaArticulo(this.value)" autocomplete="off"/>
+      </th>
+      <th width="233" scope="col"><label for="tipo">Categoría</label>
+      <select name="tipo" id="tipo" onChange="SeleccionarTipo()">
+        <option value="0">Mercadería</option>
+        <option value="1">Producto</option>
+        <option value="2">Ingredientes/Insumos</option>
+      </select></th>
+    </tr>
+    <tr>
+      <td colspan="4"><hr></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center" valign="bottom"><label for="nombre">Nombre<br/></label>
+      <input type="text" size="30" maxlength="30" name="nombre" id="nombre"
+      list="sugerencias" onkeyup="ValidarTexto(this.id);TraerSugerencias(this.value);"
+      oninput="SeleccionarSugerencia(this.value);" autocomplete="off" />
+      <datalist id="sugerencias"></datalist></td>
+      <td align="center" valign="bottom"><label id="costo_label" for="costo">Precio de Compra<br/>$</label>
+      <input type="text" size="9" maxlength="9" name="costo" id="costo" value="0"
+      onclick="this.select();" onblur="ValidarDecimal(this.id)" autocomplete="off"/>
+      <label id="costo_medida" for="costo">x unidad</label></td>
+      <td align="center" valign="bottom"><label id="precio_label" for="precio">Precio de Venta<br/>$</label>
+      <input type="text" size="9" maxlength="9" name="precio" id="precio" value="0"
+      onclick="this.select();" onblur="ValidarDecimal(this.id)" autocomplete="off"/>
+      <label id="precio_medida" for="precio">x unidad</label></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center">
+      <input type="radio" name="radio" id="medida_unidad" value="medida_unidad" checked="checked" 
+      disabled="true" onchange="CambiarMedida()"/>
+      <label for="medida_unidad">Unidades</label>
+      <input type="radio" name="radio" id="medida_gramo" value="medida_gramo" 
+      disabled="true" onchange="CambiarMedida()"/>
+      Gramos</label></td>
+      <td align="center" width="210">
+        <label for="cantidadminima2">Stock Mínimo<br/></label>
+        <input type="text" size="9" maxlength="9"style="text-align:right" name="cantidadminima" 
+      id="cantidadminima" value="0" onclick="this.select();" onblur="ValidarEntero(this.id)"
+      autocomplete="off"/>
+        <label id="medida2" for="cantidadminima2">u</label></td>
+      <td align="center"><label id="texto_cantidad" for="cantidad">Stock Inicial<br/></label>
+      <input type="text" size="9" maxlength="9" style="text-align:right" name="cantidad" 
+      id="cantidad" value="0" onclick="this.select();" onblur="ValidarEntero(this.id)"
+      autocomplete="off"/>
+      <label id="medida1" for="cantidad">u</label></td>
+    </tr>
+   </table>
+   <table id="sector_ingredientes" width="800" border="0" align="center" cellspacing="8">
+    <tr>
+      <td colspan="4"><hr></td>
+    </tr>
+    <tr>
+      <td align="right"><label for="ingredientes_articulo">Ingredientes de este Producto</label></td>
+      <td width="118" >&nbsp;</td>
+      <td ><label for="ingredientes_todos">Lista de Ingredientes</label></td>
+      <td >&nbsp;</td>
+    </tr>
+    <tr>
+      <td align="right">
+        <select name="ingredientes_articulo" size="5" id="ingredientes_articulo">
+        <option value="0">NINGUNO</option>
+        </select>
+      </td>
+      <td><p>
+        <input type="button" name="ingredientes_quitar" id="ingredientes_quitar" value="Quitar"  onclick="QuitarIngrediente()"/> 
+        <input type="button" name="ingredientes_agregar" id="ingredientes_agregar" value="Agregar" onclick="AgregarIngrediente()"/>
+        </p>
+      </td>
+      <td><select name="ingredientes_todos" size="5" id="ingredientes_todos" onchange="CambiarMedidaIngrediente()"></select>
+      </td>
+      <td><input type="text" size="9" maxlength="9" name="ingredientes_cantidad" id="ingredientes_cantidad" style="text-align:right;" value="1" onclick="this.select();" onblur="ValidarEntero(this.id)" autocomplete="off"/>
+        <label id="medida3" for="ingredientes_cantidad">unidades</label></td>
+    </tr>
+   </table>
+   <table width="800" border="0" align="center" cellspacing="8">
+    <tr>
+      <td colspan="4"><hr></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><input type="button" name="borrar" id="borrar" value="Borrar Artículo"
+      onclick="BorrarArticulo();"/></td>
+      <td colspan="2" align="center"><input type="button" name="guardar" id="guardar" value="Guardar Artículo"
+      onclick="GuardarArticulo();"/></td>
+    </tr>
+  </table>
+</form>
+
+<h4 align="center"><label id="estado">&nbsp;</label></h4>
+
+<div style="background:black;color:white;">
+<h3>&nbsp;</h3>
+</div>
+
+<script scr="scripts.js">
+
+function Comenzar() {
+	MostrarMenus('menu_abms');
+	
+	var url=document.URL;
+	var codigo=url.search("=");
+	if (codigo==-1) NuevoID();
+	else { //--Si llego con codigo desde listado
+		codigo=url.substr(codigo+1);
+		document.getElementById("codigo").value=codigo;
+		BusquedaArticulo(codigo);
+	}
+}
+
+function SeleccionarTipo() {
+	switch (document.getElementById("tipo").selectedIndex){
+		case 0: //--Mercaderia
+			document.getElementById("costo_label").style.visibility="visible";
+			document.getElementById("costo").style.visibility="visible";
+			document.getElementById("costo_medida").style.visibility="visible";
+			document.getElementById("precio_label").style.visibility="visible";
+			document.getElementById("precio").style.visibility="visible";
+			document.getElementById("precio_medida").style.visibility="visible";
+		
+			document.getElementById("medida_unidad").checked=true;
+			document.getElementById("medida_unidad").disabled=true;
+			document.getElementById("medida_gramo").disabled=true;
+			CambiarMedida();
+			
+			document.getElementById("ingredientes_articulo").selectedIndex="0";
+			document.getElementById("ingredientes_todos").selectedIndex="0";
+			document.getElementById("ingredientes_cantidad").value="1";
+			document.getElementById("ingredientes_articulo").options.length=1;
+			document.getElementById("ingredientes_articulo").options[0].text="NINGUNO";
+			
+			document.getElementById("sector_ingredientes").style.display="none";
+			break;
+		case 1: //--Producto
+			document.getElementById("costo_label").style.visibility="hidden";
+			document.getElementById("costo").value="0";
+			document.getElementById("costo").style.visibility="hidden";
+			document.getElementById("costo_medida").style.visibility="hidden";
+			document.getElementById("precio_label").style.visibility="visible";
+			document.getElementById("precio").style.visibility="visible";
+			document.getElementById("precio_medida").style.visibility="visible";
+			
+			document.getElementById("medida_unidad").checked=true;
+			document.getElementById("medida_unidad").disabled=true;
+			document.getElementById("medida_gramo").disabled=true;
+			CambiarMedida();
+			
+			document.getElementById("ingredientes_articulo").selectedIndex="0";
+			document.getElementById("ingredientes_todos").selectedIndex="0";
+			
+			document.getElementById("sector_ingredientes").style.display="block";
+			break;
+		case 2: //--Insumo
+			document.getElementById("costo_label").style.visibility="visible";
+			document.getElementById("costo").style.visibility="visible";
+			document.getElementById("costo_medida").style.visibility="visible";
+			document.getElementById("precio_label").style.visibility="hidden";
+			document.getElementById("precio").value="0";
+			document.getElementById("precio").style.visibility="hidden";
+			document.getElementById("precio_medida").style.visibility="hidden";
+		
+			document.getElementById("medida_unidad").disabled=false;
+			document.getElementById("medida_gramo").disabled=false;
+			CambiarMedida();
+				
+			document.getElementById("ingredientes_articulo").selectedIndex="0";
+			document.getElementById("ingredientes_todos").selectedIndex="0";
+			document.getElementById("ingredientes_cantidad").value="1";
+			document.getElementById("ingredientes_articulo").options.length=1;
+			document.getElementById("ingredientes_articulo").options[0].text="NINGUNO";
+			
+			document.getElementById("sector_ingredientes").style.display="none";
+			break;
+	}
+}
+
+function MostrarStockInicial(mostrar) {
+	if (mostrar==true) {
+		document.getElementById("texto_cantidad").style.visibility="visible";
+		document.getElementById("cantidad").style.visibility="visible";
+		document.getElementById("medida1").style.visibility="visible";	
+	}
+	else {
+		document.getElementById("cantidad").value=0;
+		document.getElementById("texto_cantidad").style.visibility="hidden";
+		document.getElementById("cantidad").style.visibility="hidden";
+		document.getElementById("medida1").style.visibility="hidden";
+	}
+}
+
+function CambiarMedida() {	
+	if (document.getElementById("medida_unidad").checked==true) {
+		document.getElementById("medida1").innerHTML="u";
+		document.getElementById("medida2").innerHTML="u";
+		document.getElementById("costo_medida").innerHTML="x unidad";
+		document.getElementById("precio_medida").innerHTML="x unidad";
+		
+	}
+	else {
+		document.getElementById("medida1").innerHTML="g";
+		document.getElementById("medida2").innerHTML="g";
+		document.getElementById("costo_medida").innerHTML="x kilo";
+		document.getElementById("precio_medida").innerHTML="x kilo";
+	}	
+}
+
+function CambiarMedidaIngrediente() {
+	var ingrediente = document.getElementById("ingredientes_todos").options[document.getElementById("ingredientes_todos").selectedIndex].text;
+	ingrediente=ingrediente.split("-",3);
+	ingrediente=ingrediente[2];
+	
+	if (ingrediente=='g') document.getElementById("medida3").innerHTML="gramos";
+	else document.getElementById("medida3").innerHTML="unidades";
+}
+
+function AgregarIngrediente() {
+	var ings_prod = document.getElementById("ingredientes_articulo");
+	var ings_todo = document.getElementById("ingredientes_todos");
+	
+	var ingrediente = ings_todo.options[ings_todo.selectedIndex].text;
+	var ingrediente = ingrediente.split("-", 3);
+	
+	var codigo = parseInt(ingrediente[0]);
+	var nombre = ingrediente[1];
+	var medida = ingrediente[2];	
+	var cantidad = parseInt(document.getElementById("ingredientes_cantidad").value);
+	
+	ingrediente=codigo+" -"+nombre+"- "+cantidad+medida;
+	
+	var cod_destino = "";
+	for (var i=0; i<ings_prod.length; i++) {
+		cod_destino = ings_prod.options[i].text;
+		if (parseInt(cod_destino.split("-", 1))==codigo || cod_destino=="NINGUNO") {
+			ings_prod.options[i].text=ingrediente;
+			return;
+		}
+	}
+	var nuevo_ing = document.createElement("option");
+	nuevo_ing.text=ingrediente;
+	ings_prod.add(nuevo_ing);
+	return;
+}
+
+function QuitarIngrediente() {
+	var ings_prod = document.getElementById("ingredientes_articulo");
+	if (ings_prod.options.length<=1) ings_prod.options[0].text="NINGUNO";
+	else ings_prod.remove(ings_prod.selectedIndex);
+}
+
+function HabilitarCampos(activo) {
+	if (activo==1) {
+		document.getElementById("nombre").disabled=false;
+		document.getElementById("costo").disabled=false;
+	    document.getElementById("precio").disabled=false;
+		document.getElementById("tipo").disabled=false;
+		document.getElementById("medida_gramo").disabled=false;
+		document.getElementById("medida_unidad").disabled=false;
+		document.getElementById("cantidad").disabled=false;
+		document.getElementById("cantidadminima").disabled=false;
+		document.getElementById("ingredientes_articulo").disabled=false;
+		document.getElementById("ingredientes_quitar").disabled=false;
+		document.getElementById("ingredientes_agregar").disabled=false;
+		document.getElementById("ingredientes_todos").disabled=false;
+		document.getElementById("ingredientes_cantidad").disabled=false;
+		
+		SeleccionarTipo();
+		
+		document.getElementById("borrar").value="Borrar Artículo";
+		document.getElementById("guardar").disabled=false;
+	}
+	else {
+		document.getElementById("nombre").disabled=true;
+		document.getElementById("costo").disabled=true;
+		document.getElementById("precio").disabled=true;
+		document.getElementById("precio").disabled=true;
+		document.getElementById("tipo").disabled=true;
+		document.getElementById("medida_gramo").disabled=true;
+		document.getElementById("medida_unidad").disabled=true;
+		document.getElementById("cantidad").disabled=true;
+		document.getElementById("cantidadminima").disabled=true;
+		document.getElementById("ingredientes_articulo").disabled=true;
+		document.getElementById("ingredientes_quitar").disabled=true;
+		document.getElementById("ingredientes_agregar").disabled=true;
+		document.getElementById("ingredientes_todos").disabled=true;
+		document.getElementById("ingredientes_cantidad").disabled=true;
+		
+		SeleccionarTipo();
+		
+		document.getElementById("borrar").value="Restaurar Artículo";
+		document.getElementById("guardar").disabled=true;
+	}
+};
+
+function TraerIngredientes() { //--MODO 0
+	var datos="modo=0";
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_articulos.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {		
+        	var resultados = ajax.responseText.split("|");
+			var ingredientes_todos = document.getElementById("ingredientes_todos");
+			ingredientes_todos.length=0;
+			
+			for (var i=0; i<resultados.length-1; i++) {
+				var ingrediente = document.createElement("option");
+				ingrediente.text=resultados[i];
+				ingredientes_todos.add(ingrediente);
+			}
+			ingredientes_todos.selectedIndex="0";
+		}
+	};
+	ajax.send(datos);
+}
+
+function BusquedaArticulo(codigo) { //--MODO 1
+	var datos="codigo="+codigo+"&modo=1";
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_articulos.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+        	var resultados = ajax.responseText.split("|");
+			document.getElementById("sugerencias").innerHTML="";
+			if (resultados[0]=="") {
+				document.getElementById("formulario").reset();
+				document.getElementById("estado").innerHTML="Articulo inexistente.";
+				HabilitarCampos(0);
+				document.getElementById("borrar").disabled=true;
+				document.getElementById("guardar").disabled=true;
+			}
+			else {
+				document.getElementById("nombre").value=resultados[0];
+				
+				document.getElementById("costo").value=resultados[1];
+				document.getElementById("precio").value=resultados[2];
+				
+				document.getElementById("tipo").selectedIndex=resultados[3];
+				SeleccionarTipo();
+				
+				if (resultados[4]==1) document.getElementById("medida_gramo").checked=true;
+				else document.getElementById("medida_unidad").checked=true;
+				CambiarMedida();
+				
+				MostrarStockInicial(false);
+				
+				document.getElementById("cantidadminima").value=resultados[5];
+				
+				if (resultados[7]!="") { //--Si el producto tiene ingredientes, mostrarlos
+					var ings_prod=document.getElementById("ingredientes_articulo");
+					var ingr; //(ingrediente)
+					ings_prod.length=0;
+					
+					var ingredientes=resultados[7].split("/");
+					for (var i=0; i<ingredientes.length-1; i++) {
+						ingr=ingredientes[i].split("-");
+						ingr=ingr[0]+" - "+ingr[1]+" - "+ingr[2]+ingr[3];
+						
+						var nuevo_ing=document.createElement("option");
+						nuevo_ing.text=ingr;
+						ings_prod.add(nuevo_ing);
+					}
+					
+				}
+				
+				if (resultados[6]==="0") //--Articulo dado de baja
+					document.getElementById("estado").innerHTML="Articulo dado de baja.";
+				else
+					document.getElementById("estado").innerHTML="&nbsp;"
+				HabilitarCampos(resultados[6]);
+				document.getElementById("borrar").disabled=false;
+				TraerIngredientes();
+			}
+		}
+	};
+	ajax.send(datos);
+}
+
+function NuevoID() { //--MODO 2
+	var datos="modo=2";
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_articulos.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			HabilitarCampos(1);
+			SeleccionarTipo();
+			document.getElementById("sugerencias").innerHTML="";
+			CambiarMedida();
+			MostrarStockInicial(true);			
+			document.getElementById("codigo").value=parseInt(ajax.responseText)+1;
+			document.getElementById("estado").innerHTML="&nbsp;"
+			document.getElementById("borrar").disabled=true;
+			TraerIngredientes();
+		}
+	};
+	ajax.send(datos);
+}
+
+function GuardarArticulo() { //--MODO 3
+	var datos="modo=3";
+	datos+="&codigo="+document.getElementById("codigo").value;
+	
+	datos+="&tipo="+document.getElementById("tipo").selectedIndex;
+	
+	datos+="&nombre="+document.getElementById("nombre").value;
+	
+	datos+="&costo="+document.getElementById("costo").value;
+	datos+="&precio="+document.getElementById("precio").value;
+	
+	if (document.getElementById("medida_unidad").checked==true)
+		datos+="&medida=0";
+	else datos+="&medida=1";
+	
+	datos+="&cantidad="+document.getElementById("cantidad").value;
+	datos+="&cantidadminima="+document.getElementById("cantidadminima").value;
+	
+	var ings_prod = document.getElementById("ingredientes_articulo").options;
+	datos+="&ingredientes="; //--puede ser "NINGUNO"
+	for (var i=0; i<ings_prod.length; i++) {
+		datos+=ings_prod[i].text+"|";
+	}
+	
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_articulos.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+    	if (ajax.readyState==4 && ajax.status==200) {
+			document.getElementById("estado").innerHTML=ajax.responseText;
+			MostrarStockInicial(false);
+			TraerIngredientes();
+		}
+	};
+	ajax.send(datos);	
+}
+
+function BorrarArticulo() { //--MODO 4
+	var datos="modo=4";
+	var codigo=document.getElementById("codigo").value;
+	datos+="&codigo="+codigo;
+	var res="";
+	
+	ajax=objetoAjax();
+	ajax.open("POST", "abm_articulos.php");
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	ajax.onreadystatechange=function() {
+		if (ajax.readyState==4 && ajax.status==200) {
+			res=ajax.responseText;
+			res=res.split("-");
+			document.getElementById("estado").innerHTML=res[1];
+			HabilitarCampos(res[0]);
+		}
+	};
+	ajax.send(datos);
+	
+}
+
+function TraerSugerencias(nombre) { //--MODO 5
+	var datos="modo=5";
+	datos+="&nombre="+nombre;
+	
+	var sugerencias=document.getElementById("sugerencias");
+	sugerencias.innerHTML="";
+	
+	if (nombre!="")	{
+		ajax=objetoAjax();
+		ajax.open("POST", "abm_articulos.php");
+		ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		ajax.onreadystatechange=function() {
+    		if (ajax.readyState==4 && ajax.status==200) {
+				var resultados=ajax.responseText;
+				resultados=resultados.split("|");
+				
+				for (var i=0; i<resultados.length-1; i++) {
+					var sugerencia=document.createElement("option");
+					sugerencia.value=resultados[i];
+					sugerencias.appendChild(sugerencia);
+				}
+			}
+		};
+		ajax.send(datos);
+	}
+}
+
+function SeleccionarSugerencia(texto) {
+	var lista=document.getElementById("sugerencias").childNodes;
+	for (var i=0; i<lista.length; i++) {
+		if (texto==lista[i].value) {
+			texto=texto.split("-");
+			document.getElementById("codigo").value=texto[0];
+			BusquedaArticulo(texto[0]);
+			break;
+		}
+	}
+}
+
+</script>
+</body>
+
+</html>

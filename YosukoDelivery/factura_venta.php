@@ -7,7 +7,7 @@ switch ($_POST["modo"]) {
 					
 		$res=Consulta("
 		SELECT persID, CONCAT(persNombre, ' ', persApellido) AS nya
-		FROM Personas
+		FROM personas
 		WHERE persTipo=0 AND persActivo=1
 		HAVING nya LIKE '%$nombre%'
 		ORDER BY nya
@@ -27,8 +27,8 @@ switch ($_POST["modo"]) {
 		$res=Consulta("
 		SELECT persID, persNombre, persApellido, persDNI, persDomicilio, persTelefono,
 		persNacimiento, provNombre, locaNombre
-		FROM Personas
-		LEFT JOIN localidades ON localidades.locaID=Personas.locaID
+		FROM personas
+		LEFT JOIN localidades ON localidades.locaID=personas.locaID
 		LEFT JOIN provincias ON provincias.provID=localidades.provID
 		WHERE persID='$codigo'");
 				
@@ -39,12 +39,12 @@ switch ($_POST["modo"]) {
 		}
 	break;}
 
-	case 2: { //--TRAER SUGERENCIAS DE ARTICULOS
+	case 2: { //--TRAER SUGERENCIAS DE articulos
 		$nombre=$_POST["nombre"];
 			
 		$res=Consulta("
 		SELECT artiID, artiNombre
-		FROM Articulos
+		FROM articulos
 		WHERE artiTipo!=2 AND artiActivo=1 AND artiNombre LIKE '%$nombre%'
 		ORDER BY artiNombre
 		LIMIT 5
@@ -62,7 +62,7 @@ switch ($_POST["modo"]) {
 		
 		$res=Consulta("
 		SELECT artiID, artiNombre, artiPrecio
-		FROM Articulos
+		FROM articulos
 		WHERE artiID='$codigo'");
 				
 		if ($res!="") {
@@ -215,8 +215,8 @@ switch ($_POST["modo"]) {
 			$res=Consulta("
 			SELECT persID, persNombre, persApellido, persDNI, persDomicilio, persTelefono,
 			persNacimiento, provNombre, locaNombre
-			FROM Personas
-			LEFT JOIN localidades ON localidades.locaID=Personas.locaID
+			FROM personas
+			LEFT JOIN localidades ON localidades.locaID=personas.locaID
 			LEFT JOIN provincias ON provincias.provID=localidades.provID
 			WHERE persID='$cliente'");
 			$res=$res[0];

@@ -1,0 +1,2 @@
+site yosukodeliverypizza.000webhost.com
+pass yosukosoft

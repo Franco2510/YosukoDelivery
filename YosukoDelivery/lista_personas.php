@@ -2,7 +2,7 @@
 include "common.php";
 
 switch ($_POST["modo"]) {
-	case 0: { //--TRAER LISTADO DE PERSONAS
+	case 0: { //--TRAER LISTADO DE personas
 		$nombre=$_POST["nombre"];
 		$orden=$_POST["orden"];
 		$ascendente=$_POST["ascendente"];
@@ -45,11 +45,11 @@ switch ($_POST["modo"]) {
 		SELECT persID, persNombre, persApellido, CONCAT(persNombre, ' ', persApellido) as nya,
 		persTipo, persDNI, persDomicilio, persTelefono, persNacimiento, persFechaAlta, persActivo,
 		locaNombre, provNombre, cargoNombre, proveNombre 
-		FROM Personas
-		LEFT JOIN localidades ON localidades.locaID=Personas.locaID
+		FROM personas
+		LEFT JOIN localidades ON localidades.locaID=personas.locaID
 		LEFT JOIN provincias ON provincias.provID=localidades.provID
-		LEFT JOIN cargos ON cargos.cargoID=Personas.cargoID
-		LEFT JOIN proveedores ON proveedores.proveID=Personas.proveID
+		LEFT JOIN cargos ON cargos.cargoID=personas.cargoID
+		LEFT JOIN proveedores ON proveedores.proveID=personas.proveID
 		".$where." ".$borrados." ".$and." ".$nombre."
 		ORDER BY ".$orden." ".$ascendente."
 		");

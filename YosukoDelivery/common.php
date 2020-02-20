@@ -2,7 +2,7 @@
 date_default_timezone_set("America/Argentina/Buenos_Aires");
 
 function Conectarse() {
-	if (!($conexion=mysqli_connect("127.0.0.1","root","","yosukodelivery"))) return 0;
+	if (!($conexion=mysqli_connect("localhost","id12645781_root","password","id12645781_yosukodelivery"))) return 0;
 	else return $conexion;
 }
 
@@ -18,7 +18,7 @@ function Consulta($pedido) {
 			if ($consulta===true)
 				return "Modificacion Exitosa |"; //--UPDATE, DELETE...
 			else {
-				$respuestas="";
+				$respuestas=[];
 				while ($respuesta=mysqli_fetch_assoc($consulta)) {
 					$respuestas[]=$respuesta;
 				}

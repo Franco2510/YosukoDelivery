@@ -33,7 +33,7 @@ switch ($_POST["modo"]) {
 		$res=Consulta("
 		SELECT persNombre, persApellido, persTipo, persDNI, persDomicilio, persTelefono,
 		persNacimiento, locaID, cargoID, proveID, persActivo
-		FROM Personas
+		FROM personas
 		WHERE persID='$codigo'");
 		if ($res!="") {
 			$res=$res[0];
@@ -69,7 +69,7 @@ switch ($_POST["modo"]) {
 	case 2: { //--BUSQUEDA ULTIMO ID
 		$res=Consulta("
 		SELECT MAX(persID) AS persID 
-		FROM Personas");
+		FROM personas");
 		$res=$res[0];
 		if ($res!="") echo $res["persID"];
 		else echo "0";
@@ -104,13 +104,13 @@ switch ($_POST["modo"]) {
 			if ($empresa=="") $empresa="NULL";
 			else $empresa="'".$empresa."'";
 			
-			$res=Consulta("SELECT persID FROM Personas WHERE persID='$codigo'");
+			$res=Consulta("SELECT persID FROM personas WHERE persID='$codigo'");
 			
 			if ($res!="") {
 				$res=$res[0];
 				if ($codigo==$res["persID"]) { //--Modificacion
 					Consulta("
-					UPDATE Personas
+					UPDATE personas
 					SET persNombre='$nombre', persApellido='$apellido', persTipo='$tipo', persDNI='$dni',
 					persDomicilio='$domicilio', persTelefono=$telefono, persNacimiento=$nacimiento,
 					locaID=$localidad, cargoID=$cargo, proveID=$empresa
@@ -122,7 +122,7 @@ switch ($_POST["modo"]) {
 			else { //--ALTA
 				if ($nombre!="") {
 					Consulta("
-					INSERT INTO Personas (persNombre, persApellido, persTipo, persDNI,
+					INSERT INTO personas (persNombre, persApellido, persTipo, persDNI,
 					persDomicilio, persTelefono, persNacimiento, locaID, cargoID, proveID)
 					VALUES ('$nombre', '$apellido', '$tipo', '$dni',
 					'$domicilio', $telefono, $nacimiento, $localidad, $cargo, $empresa)
@@ -141,7 +141,7 @@ switch ($_POST["modo"]) {
 				
 		$res=Consulta("
 		SELECT persActivo
-		FROM Personas
+		FROM personas
 		WHERE persID='$codigo'
 		");
 						
@@ -159,7 +159,7 @@ switch ($_POST["modo"]) {
 			}
 			
 			$res=Consulta("
-			UPDATE Personas
+			UPDATE personas
 			SET persActivo='$activo'
 			WHERE persID='$codigo'
 			");
@@ -272,12 +272,12 @@ switch ($_POST["modo"]) {
 		echo $elemento." de la lista.";
 	break;}
 	
-	case 9: { //--TRAER SUGERENCIAS DE PERSONAS
+	case 9: { //--TRAER SUGERENCIAS DE personas
 		$nombre=$_POST["nombre"];
 					
 		$res=Consulta("
 		SELECT persID, CONCAT(persNombre, ' ', persApellido) AS nya
-		FROM Personas
+		FROM personas
 		HAVING nya LIKE '%$nombre%'
 		ORDER BY nya
 		LIMIT 5

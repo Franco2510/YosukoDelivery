@@ -2,7 +2,7 @@
 include "common.php";
 
 switch ($_POST["modo"]) {
-	case 0: { //--TRAER LISTADO DE ARTICULOS
+	case 0: { //--TRAER LISTADO DE articulos
 		$nombre=$_POST["nombre"];
 		$orden=$_POST["orden"];
 		$ascendente=$_POST["ascendente"];
@@ -40,7 +40,7 @@ switch ($_POST["modo"]) {
 	
 		$res=Consulta("
 		SELECT artiID, artiNombre, artiTipo, artiCosto, artiPrecio, artiCantidadMin, artiMedida, artiActivo
-		FROM Articulos
+		FROM articulos
 		".$where." ".$borrados." ".$and." ".$nombre."
 		ORDER BY ".$orden." ".$ascendente."
 		");
@@ -59,7 +59,7 @@ switch ($_POST["modo"]) {
 		$res=Consulta("
 		SELECT prodID, ingrID, artiNombre, ingrCantidad, artiMedida
 		FROM producto_ingrediente
-		JOIN Articulos ON producto_ingrediente.ingrID=Articulos.artiID
+		JOIN articulos ON producto_ingrediente.ingrID=articulos.artiID
 		WHERE prodID='$codigo'
 		");
 		if ($res!="") {
